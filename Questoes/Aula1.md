@@ -2,7 +2,7 @@
 Data: 10/03/2017
 # Questões da aula 01
  1. O que são sistemas embarcados?
-- São computadores em chips para im único proposito.
+ - São computadores em chips para im único proposito.
 
  2. O que são sistemas microprocesssados?
 
