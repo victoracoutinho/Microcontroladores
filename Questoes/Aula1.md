@@ -2,7 +2,7 @@
 Data: 10/03/2017
 # Questões da aula 01
  1. O que são sistemas embarcados?
- - São computadores em chips para im único proposito.
+ - São computadores em chips para um único proposito.
 
  2. O que são sistemas microprocesssados?
 
@@ -14,7 +14,8 @@ Data: 10/03/2017
 	(b) Para eletrodomésticos: 
 	- smart TV
 	
-	(c) Para automação industrial.
+	(c) Para automação industrial:
+	controle de braços mecânicos.
 
  4. Cite arquiteturas possíveis e as diferenças entre elas.
 
