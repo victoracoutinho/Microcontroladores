@@ -23,11 +23,11 @@ int main(void)
 		printf("%d eh par.\n");
 	return 0;
 }
-```C
-	```
-	Para este código, responda: 
+```
+	
+- Para este código, responda: 
 
-	(a) A variável `i` é armazenada na memória RAM ou ROM? Por quê? 
+	a. A variável `i` é armazenada na memória RAM ou ROM? Por quê? 
 	
 	- Na memória RAM, pois ela será sobreescrevida e não há necessidade de mantê-la após o fim do código.
 
