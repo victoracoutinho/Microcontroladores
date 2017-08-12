@@ -1,3 +1,5 @@
+# Questões da aula 2
+
 1. Quais as diferenças entre os barramentos de dados e de endereços?
 
 	Barramento de dados é por onde passa os dados e os endereços são as posições do dados na memória.
@@ -21,17 +23,17 @@ int main(void)
 		printf("%d eh par.\n");
 	return 0;
 }
-```
+```C
+	```
+	Para este código, responda: 
 
-Para este código, responda: 
-
-(a) A variável `i` é armazenada na memória RAM ou ROM? Por quê? 
+	(a) A variável `i` é armazenada na memória RAM ou ROM? Por quê? 
 	
-Na memória RAM, pois ela será sobreescrevida e não há necessidade de mantê-la após o fim do código.
+	- Na memória RAM, pois ela será sobreescrevida e não há necessidade de mantê-la após o fim do código.
 
-b. O programa compilado a partir deste código é armazenado na memória RAM ou ROM? Por quê?
+	b. O programa compilado a partir deste código é armazenado na memória RAM ou ROM? Por quê?
 	
-Na ROM, pois ele não será alterado e haverá necessidade de mantê-lo após o desligar a energia.
+	- Na ROM, pois ele não será alterado e haverá necessidade de mantê-lo após o desligar a energia.
 
 4. Quais são as diferenças, vantagens e desvantagens das arquiteturas Harvard e Von Neumann?
 	
