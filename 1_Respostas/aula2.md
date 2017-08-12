@@ -42,6 +42,7 @@ int main(void)
 5. Considere a variável inteira `i`, armazenando o valor `0x8051ABCD`. Se `i` é armazenada na memória a partir do endereço `0x0200`, como ficam este byte e os seguintes, considerando que a memória é: (a) Little-endian; (b) Big-endian.
 
 	(a) `0xCD`em `0x200`, `0xAB`em `0x201`, `0x51`em `0x202`, `0x80`em `0x203`
+	
 	(b) `0x80`em `0x200`, `0x51`em `0x201`, `0xAB`em `0x202`, `0xCD`em `0x203`
 
 6. Sabendo que o processador do MSP430 tem registradores de 16 bits, como ele soma duas variáveis de 32 bits?
