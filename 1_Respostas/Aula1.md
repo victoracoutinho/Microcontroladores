@@ -22,10 +22,10 @@ Data: 12/03/2017
 
  4. Cite arquiteturas possíveis e as diferenças entre elas.
  
- 	Computadores completos: hardware e o software são facilmente disponíveis
- 	ASICs: projetado para uma aplicação particular. Ótima performasse, mas alto custo de projeto e teste.
- 	FPGAs: Tem mais estrutura versátil e pode ser enorme (cerca de 10^9 transistores). Normalmente programado em VHDL ou Verilog.
- 	Microcontroladores: O CPU tem uma gama de periféricos para uso tanto digital quanto analógico. Normalmente inclui memória RAM e ROM. Pode ser programado em C ou C++
+ 	- Computadores completos: hardware e o software são facilmente disponíveis
+ 	- ASICs: projetado para uma aplicação particular. Ótima performasse, mas alto custo de projeto e teste.
+ 	- FPGAs: Tem mais estrutura versátil e pode ser enorme (cerca de 10^9 transistores). Normalmente programado em VHDL ou Verilog.
+ 	- Microcontroladores: O CPU tem uma gama de periféricos para uso tanto digital quanto analógico. Normalmente inclui memória RAM e ROM. Pode ser programado em C ou C++
 
  5. Por que usamos o MSP430 na disciplina, ao invés de outro microcontrolador?
  	
