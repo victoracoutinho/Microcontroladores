@@ -68,11 +68,9 @@
 
 ```C
 	# include <msp430g2553.h>
-	void pisca_dois_leds (saida){
-		# define desligado 0x00
-		P1DIR = LEDS;
-		P1OUT = LEDS; //liga os leds
-		P1OUT = desligado; // desliga os leds
+	void pisca_dois_leds (){
+		P1OUT |= LEDS; //liga os leds
+		P1OUT &=~LEDS; // desliga os leds
 	}
 ```
 
@@ -86,7 +84,7 @@
 		WDTCTL = WDTPW | WDTHOLD;
 		P1DIR = LEDS;
 		while (){
-			pisca_dois_leds ( LEDS);
+			pisca_dois_leds ();
 		}
 	}
 ```
@@ -105,7 +103,7 @@
 		while (){
 			if ( (P1IN & botao) != 0)
 				while (contador < 2){
-					pisca_dois_leds(LEDS);
+					pisca_dois_leds();
 					contador ++;
 				}
 			} else {
