@@ -46,15 +46,33 @@ lab1:	sub R6,R5
 while(save[i]!=k) i++;
 ```
 ```C
-while: mov.w R7,R11
-
+while: 	mov.w R7,R11
+	rla.w R11
+	add R9, R11; R9 = save
+	cmp R11, R7
+	jeq fim
+	inc.w R7
+	jmp while
+fim:
 ```
 4. "Traduza" o seguinte trecho de código em C para o assembly do MSP430:
 
 ```C
 for(i=0; i<100; i++) A[i] = i*2;
 ```
-
+```C
+	mov.w #0, R7
+for:	mov.w R7, R11
+	cmp R11, #100
+	jge fim
+	rla.w R11
+	mov.w R11, R12
+	
+	inc.w R7
+fim:	
+	
+	
+```
 5. "Traduza" o seguinte trecho de código em C para o assembly do MSP430:
 
 ```C
