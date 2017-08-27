@@ -67,14 +67,26 @@ for:	mov.w R7, R11
 	jge fim
 	rla.w R11
 	mov.w R11, R12
-	
+	add.w R9,R11
+	mov.w R12, 0(R11) 
 	inc.w R7
-fim:	
-	
-	
+	jmp for
+fim:		
 ```
 5. "Traduza" o seguinte trecho de código em C para o assembly do MSP430:
 
 ```C
 for(i=99; i>=0; i--) A[i] = i*2;
 ```
+```C
+	mov.w #99, R7
+for:	mov.w R7, R11
+	cmp #0 , R11
+	jl fim
+	rla.w R11
+	mov.w R11, R12
+	add.w R9,R11
+	mov.w R12, 0(R11) 
+	dec.w R7
+	jmp for
+fim:	
