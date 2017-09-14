@@ -9,7 +9,25 @@ x(n+1) = (x(n) + S/x(n))/2
 O protótipo da função é:
 
 ```C
-unsigned int Raiz_Quadrada(unsigned int S);
+float raiz_quadrada (float numero){
+    ///Cálculo da raiz quadrada do número
+    int i;
+    float resultado[10];
+    resultado[0] = numero/2;
+
+    if (numero > 0){
+        for (i = 1; i < 10; i++) {
+        resultado[i] = (resultado[i-1]+ numero/resultado[i-1])/2;
+        }
+    }else if(numero < 0) {
+        printf("\n Erro: Sinal negativo na raiz quadrada, numero complexo!\n O resultado que apareceu é '-1', mas está errado. \n");
+        return -1;
+    } else {
+        resultado[9] = 0;
+    }
+
+    return resultado[9];
+}
 ```
 
 (b) Escreva a sub-rotina equivalente na linguagem Assembly do MSP430. A variável `S` é fornecida pelo registrador R15, e a raiz quadrada de `S` (ou seja, a variável `x`) é fornecida pelo registrador R15 também.
@@ -17,7 +35,27 @@ unsigned int Raiz_Quadrada(unsigned int S);
 2. (a) Escreva uma função em C que calcule `x` elevado à `N`-ésima potência, seguindo o seguinte protótipo: 
 
 ```C
-int Potencia(int x, int N);
+float Potencia (int x, int N){
+    ///Cálculo de Potência de x elevado a N
+    int i;
+    int resultado = 1;
+    printf("%d\n",N);
+
+    if (N > 0){
+        for (i = 0; i < N; i++) {
+        resultado = x * resultado;
+        }
+    }if (N < 0) {
+        for (i = 0; i < N; i++) {
+            resultado = 1/((float) x) * resultado;
+            printf("Resp: %f\n", resultado);
+        }
+    } else {
+        printf(" else Resp: %f\n", resultado);
+        resultado = 1;
+    }
+
+    return resultado;
 ```
 
 (b) Escreva a sub-rotina equivalente na linguagem Assembly do MSP430. `x` e `n` são fornecidos através dos registradores R15 e R14, respectivamente, e a saída deverá ser fornecida no registrador R15.
