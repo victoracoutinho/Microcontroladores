@@ -31,27 +31,19 @@ unsigned int raiz_quadrada (unsigned int numero){
 2. (a) Escreva uma função em C que calcule `x` elevado à `N`-ésima potência, seguindo o seguinte protótipo: 
 
 ```C
-float Potencia (int x, int N){
+int Potencia (int x, int N){
     ///Cálculo de Potência de x elevado a N
     int i;
-    int resultado = 1;
+    float resultado = 1;
     printf("%d\n",N);
 
     if (N > 0){
         for (i = 0; i < N; i++) {
         resultado = x * resultado;
         }
-    }if (N < 0) {
-        for (i = 0; i < N; i++) {
-            resultado = 1/((float) x) * resultado;
-            printf("Resp: %f\n", resultado);
-        }
-    } else {
-        printf(" else Resp: %f\n", resultado);
-        resultado = 1;
     }
-
     return resultado;
+}
 ```
 
 (b) Escreva a sub-rotina equivalente na linguagem Assembly do MSP430. `x` e `n` são fornecidos através dos registradores R15 e R14, respectivamente, e a saída deverá ser fornecida no registrador R15.
