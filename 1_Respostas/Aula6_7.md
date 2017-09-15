@@ -161,19 +161,43 @@ double Fatorial(unsigned int n){
 (b) Escreva a sub-rotina equivalente na linguagem Assembly do MSP430, mas considere que os valores de entrada e de saída são inteiros de 16 bits. A variável de entrada é fornecida pelo registrador R15, e o valor de saída também.
 
 8. Escreva uma sub-rotina na linguagem Assembly do MSP430 que indica se um vetor esta ordenado de forma decrescente. Por exemplo:
+
 [5 4 3 2 1] e [90 23 20 10] estão ordenados de forma decrescente.
+
 [1 2 3 4 5] e [1 2 3 2] não estão.
+
 O primeiro endereço do vetor é fornecido pelo registrador R15, e o tamanho do vetor é fornecido pelo registrador R14. A saída deverá ser fornecida no registrador R15, valendo 1 quando o vetor estiver ordenado de forma decrescente, e valendo 0 em caso contrário.
 
 9. Escreva uma sub-rotina na linguagem Assembly do MSP430 que calcula o produto escalar de dois vetores, `a` e `b`. O primeiro endereço do vetor `a` deverá ser passado através do registrador R15, o primeiro endereço do vetor `b` deverá ser passado através do registrador R14, e o tamanho do vetor deverá ser passado pelo registrador R13. A saída deverá ser fornecida no registrador R15.
 
 10. (a) Escreva uma função em C que indica se um vetor é palíndromo. Por exemplo:
+
 	[1 2 3 2 1] e [0 10 20 20 10 0] são palíndromos.
+	
 	[5 4 3 2 1] e [1 2 3 2] não são.
+	
 Se o vetor for palíndromo, retorne o valor 1. Caso contrário, retorne o valor 0. O protótipo da função é:
 
 ```C
-int Palindromo(int vetor[ ], int tamanho);
+int Palindromo(double* vetor, int tamanho){
+    ///Diz se um vetor é palindromo, ou seja,
+    /// se os valores do vetor são iguais tanto do centro para um lado quanto para outro.
+    /// [0,1,3,2,3,1,0] ou [5,2,3,1,1,3,2,5]
+
+    int i = 0, resultado = 1;
+
+    for (i=0; i< tamanho;i++){
+        if (vetor[i] == vetor[(tamanho-1) - i]){
+            resultado = 1;
+            printf("%d | %.2lf | %.2lf\n", i,vetor[i],vetor[(tamanho-1) - i] );
+        }else{
+            resultado = 0;
+            break;
+        }
+    }
+
+    return resultado;
+}
 ```
 
 (b) Escreva a sub-rotina equivalente na linguagem Assembly do MSP430. O endereço do vetor de entrada é dado pelo registrador R15, o tamanho do vetor é dado pelo registrador R14, e o resultado é dado pelo registrador R15.
