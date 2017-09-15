@@ -7,24 +7,22 @@ x(n+1) = (x(n) + S/x(n))/2
 ```
 
 ```C
-float raiz_quadrada (float numero){
-    ///Cálculo da raiz quadrada do número
+unsigned int raiz_quadrada (unsigned int numero){
+    ///Cálculo da raiz quadrada do número - INTEIRO
     int i;
-    float resultado[10];
+    unsigned int resultado[20];
     resultado[0] = numero/2;
 
     if (numero > 0){
-        for (i = 1; i < 10; i++) {
+        for (i = 1; i < 20; i++) {
         resultado[i] = (resultado[i-1]+ numero/resultado[i-1])/2;
+        //printf("%d | %u\n",i, resultado[i]);
         }
-    }else if(numero < 0) {
-        printf("\n Erro: Sinal negativo na raiz quadrada. \n");
-        return -1;
-    } else {
-        resultado[9] = 0;
+    }else {
+        resultado[19] = 0;
     }
 
-    return resultado[9];
+    return resultado[19];
 }
 ```
 
