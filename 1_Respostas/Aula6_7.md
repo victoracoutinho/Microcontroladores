@@ -18,7 +18,7 @@ float raiz_quadrada (float numero){
         resultado[i] = (resultado[i-1]+ numero/resultado[i-1])/2;
         }
     }else if(numero < 0) {
-        printf("\n Erro: Sinal negativo na raiz quadrada, numero complexo!\n O resultado que apareceu é '-1', mas está errado. \n");
+        printf("\n Erro: Sinal negativo na raiz quadrada. \n");
         return -1;
     } else {
         resultado[9] = 0;
