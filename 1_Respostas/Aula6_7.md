@@ -6,8 +6,6 @@ Para cada questão, escreva funções em C e/ou sub-rotinas na linguagem Assembl
 x(n+1) = (x(n) + S/x(n))/2
 ```
 
-O protótipo da função é:
-
 ```C
 float raiz_quadrada (float numero){
     ///Cálculo da raiz quadrada do número
@@ -67,7 +65,23 @@ float Potencia (int x, int N){
 5. (a) Escreva uma função em C que indica a primalidade de uma variável inteira sem sinal, retornando o valor 1 se o número for primo, e 0, caso contrário. Siga o seguinte protótipo:
 
 ```C
-int Primalidade(unsigned int x);
+int Primalidade (unsigned int numero){
+    ///Anãlise de paridade
+    int i, j;
+    //int resultado = 1;
+    int auxiliar;
+
+    for (i = 2; i < numero; i++){
+            for (j = 1; j< numero; j++){
+                auxiliar = i*j; ///verifica se numero é divisível por i
+                if (auxiliar == numero){
+                    return 0; /// Não é primo!
+                }
+        }
+    }
+    /// Se chegou aqui é porque é PRIMO
+    return 1;
+    }
 ```
 
 (b) Escreva a sub-rotina equivalente na linguagem Assembly do MSP430. A variável de entrada é fornecida pelo registrador R15, e o valor de saída também.
@@ -76,7 +90,36 @@ int Primalidade(unsigned int x);
 O protótipo da função é:
 
 ```C
-unsigned long long DuploFatorial(unsigned long long n);
+unsigned long long DuploFatorial(unsigned long long n){
+    ///Duplo fatorial
+    ///Se for par o fatorial fica só com os pares multiplicando
+    ///Se for impar o fatorial fica só impares multiplicando
+    int i, j;
+    int numero = n; // Para não causar um loop infinito na hora de fazer o fatorial
+    unsigned long long resultado = 1;
+    int paridade;
+
+    ///Verificar se é impar ou par
+    if( (n%2) == 0){
+        paridade = 1; //PAR
+    }else{
+        paridade = 0; //IMPAR
+    }
+
+    ///Fazer o fatorial duplo
+    if (paridade == 1){
+        for (i = 2; i <= numero; i+=2){//somente pares
+            resultado = i*resultado;
+        }
+    }else{
+        for (i = 1; i <= numero; i+=2){//somente impares
+            resultado = i*resultado;
+        }
+    }
+    
+   //manda resultado
+   return resultado;
+    }
 ```
 
 7. (a) Escreva uma função em C que calcula a função exponencial utilizando a série de Taylor da mesma. Considere o cálculo até o termo n = 20. O protótipo da função é `double ExpTaylor(double x);`
