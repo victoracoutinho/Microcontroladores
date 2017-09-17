@@ -48,9 +48,78 @@ int Potencia (int x, int N){
 
 (b) Escreva a sub-rotina equivalente na linguagem Assembly do MSP430. `x` e `n` são fornecidos através dos registradores R15 e R14, respectivamente, e a saída deverá ser fornecida no registrador R15.
 
-3. Escreva uma sub-rotina na linguagem Assembly do MSP430 que calcula a divisão de `a` por `b`, onde `a`, `b` e o valor de saída são inteiros de 16 bits. `a` e `b` são fornecidos através dos registradores R15 e R14, respectivamente, e a saída deverá ser fornecida através do registrador R15.
+```
+; FUNÇÃO POTÊNCIA --------------------------------------------------------------
 
+potencia:    ;Função que calcula R15^(R14)
+        clr.w R13       ; Contador do for. Equivalente ao int i = 0
+        mov.w #1,R12       ; resultado. Fica acumulando.
+for_potencia:
+        
+        push.w R15     ;Multiplicação entre resultado( R12 ) e R15
+        push.w R14
+        mov.w R12, R14
+        call #mult
+        mov.w R15, R12 ;Resposta da multiplicação fica R12
+        pop.w R14
+        pop.w R15
+        
+        inc.w R13      ; equivalente ao i++
+        cmp R14,R13    ; i == N, equivalente ao i<N
+        jl for_potencia
+        mov.w R12, R15
+        ret
+;-------------------------------------------------------------------------------
+
+
+; FUNÇÃO MULTIPLICAÇÃO ---------------------------------------------------------
+mult:
+        TST R14       ; Verificar se R14 é igual a zero
+        JNZ mult_else ; caso não seja, continua decaindo
+        CLR.W R15   ;Se for igual a zero, então limpa R15 para colocar as somas
+        ret
+mult_else
+        PUSH.W R15    ;decai o R14 para guardar R15 R14 vezes na pilha
+        DEC.W R14     ; até R14 for igual a zero
+        CALL #mult    ;No MULT ele vai testar R14
+        POP.W R14     ; Reculpera todos R15 que estão na pilha para R14
+        ADD R14,R15
+        RET
+;-------------------------------------------------------------------------------
+```
+
+3. Escreva uma sub-rotina na linguagem Assembly do MSP430 que calcula a divisão de `a` por `b`, onde `a`, `b` e o valor de saída são inteiros de 16 bits. `a` e `b` são fornecidos através dos registradores R15 e R14, respectivamente, e a saída deverá ser fornecida através do registrador R15.
+```                                    
+; FUNÇÃO DIVISÃO ---------------------------------------------------------------
+divisao ; Função de divisão
+        clr.w R13         ; Conta quantas vezes R15 é subtraido por R14
+verificar:
+        cmp R15,R14       ; Até que R15 seja menor que R14
+        jl divisao_else
+        mov.w R13,R15     ;Aredonda para o menor número
+        ret
+divisao_else
+        sub.w R14, R15
+        inc.w R13         ; Contagem
+        jmp verificar
+;-------------------------------------------------------------------------------
+```
 4. Escreva uma sub-rotina na linguagem Assembly do MSP430 que calcula o resto da divisão de `a` por `b`, onde `a`, `b` e o valor de saída são inteiros de 16 bits. `a` e `b` são fornecidos através dos registradores R15 e R14, respectivamente, e a saída deverá ser fornecida através do registrador R15.
+```
+; RESTO DA DIVISÃO -------------------------------------------------------------
+resto:
+        clr.w R13         ; Conta quantas vezes R15 é subtraido por R14
+verificar:
+        cmp R15,R14       ; Até que R15 seja menor que R14
+        jl resto_else
+        ;mov.w R13,R15     ;O RESTO fica no R15
+        ret
+resto_else
+        sub.w R14, R15
+        inc.w R13         ; Contagem
+        jmp verificar
+;-------------------------------------------------------------------------------
+```
 
 5. (a) Escreva uma função em C que indica a primalidade de uma variável inteira sem sinal, retornando o valor 1 se o número for primo, e 0, caso contrário. Siga o seguinte protótipo:
 
