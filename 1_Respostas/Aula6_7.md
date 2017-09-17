@@ -27,6 +27,68 @@ unsigned int raiz_quadrada (unsigned int numero){
 ```
 
 (b) Escreva a sub-rotina equivalente na linguagem Assembly do MSP430. A variável `S` é fornecida pelo registrador R15, e a raiz quadrada de `S` (ou seja, a variável `x`) é fornecida pelo registrador R15 também.
+```
+; FUNÇÃO RAIZ QUADRADA --------------------------------------------------------
+ raiz_quadrada: ; Raiz de R15
+        clr.w R14   ;Resultado[i-1]
+        clr.w R13   ;Resultado[i]
+        clr.w R12; Equivalente ao int i = 0
+        ;Dividir R15/2
+        push.w R15
+        push.w R13
+        mov.w #2,R14
+        call #divisao
+        mov.w R15,R14 ;Resultado da divisão no R13 -- Resultado anterior
+        pop.w R13
+        pop.w R15
+        ; Fim da divisão
+for_raiz_quadrada:
+        ;Dividir numero/resultado[i-1]
+        push.w R15
+        push.w R14
+        call #divisao ; R15 é o número e R14 e o resultado anterior
+        mov.w R15,R13 ;Resultado da divisão no R13 -- numero/resultado[i-1]
+        pop.w R14
+        pop.w R15
+        ; Fim da divisão
+        
+        add R14,R13    ; resultado[i-1] + numero/resultado[i-1]
+        
+        ;Dividir (resultado[i-1]+ numero/resultado[i-1])/2
+        push.w R15
+        push.w R14
+        mov.w R13,R15
+        mov.w #2, R14
+        call #divisao ; R15 é o número e R14 e o resultado anterior
+        mov.w R15,R13 ;Resultado da divisão no R13 -- numero/resultado[i-1]
+        pop.w R14
+        pop.w R15
+        ; Fim da divisão
+        
+        mov.w R13, R14;resultado[i] = (resultado[i-1]+ numero/resultado[i-1])/2;
+        inc.w R12     ; i++
+        cmp #20, R12
+        jl for_raiz_quadrada
+        mov.w R14,R15
+        ret
+ 
+ ;------------------------------------------------------------------------------
+ 
+; FUNÇÃO DIVISÃO ---------------------------------------------------------------
+divisao ; R15 dividido por R14
+        clr.w R13         ; Conta quantas vezes R15 é subtraido por R14
+verificar:
+        cmp R14,R15       ; Até que R15 seja menor que R14
+        jge divisao_else
+        mov.w R13,R15     ;Aredonda para o menor número
+        ret
+divisao_else
+        sub.w R14, R15
+        inc.w R13         ; Contagem
+        jmp verificar
+;-------------------------------------------------------------------------------
+        END
+```
 
 2. (a) Escreva uma função em C que calcule `x` elevado à `N`-ésima potência, seguindo o seguinte protótipo: 
 
@@ -91,11 +153,11 @@ mult_else
 3. Escreva uma sub-rotina na linguagem Assembly do MSP430 que calcula a divisão de `a` por `b`, onde `a`, `b` e o valor de saída são inteiros de 16 bits. `a` e `b` são fornecidos através dos registradores R15 e R14, respectivamente, e a saída deverá ser fornecida através do registrador R15.
 ```                                    
 ; FUNÇÃO DIVISÃO ---------------------------------------------------------------
-divisao ; Função de divisão
+divisao ; R15 dividido por R14
         clr.w R13         ; Conta quantas vezes R15 é subtraido por R14
 verificar:
-        cmp R15,R14       ; Até que R15 seja menor que R14
-        jl divisao_else
+        cmp R14,R15       ; Até que R15 seja menor que R14
+        jge divisao_else
         mov.w R13,R15     ;Aredonda para o menor número
         ret
 divisao_else
@@ -110,8 +172,8 @@ divisao_else
 resto:
         clr.w R13         ; Conta quantas vezes R15 é subtraido por R14
 verificar:
-        cmp R15,R14       ; Até que R15 seja menor que R14
-        jl resto_else
+        cmp R14,R15       ; Até que R15 seja menor que R14
+        jge resto_else
         ;mov.w R13,R15     ;O RESTO fica no R15
         ret
 resto_else
@@ -226,6 +288,73 @@ double Fatorial(unsigned int n){
 [1 2 3 4 5] e [1 2 3 2] não estão.
 
 O primeiro endereço do vetor é fornecido pelo registrador R15, e o tamanho do vetor é fornecido pelo registrador R14. A saída deverá ser fornecida no registrador R15, valendo 1 quando o vetor estiver ordenado de forma decrescente, e valendo 0 em caso contrário.
+```
+#include "msp430.h"                     ; #define controlled include file
+
+        NAME    main                    ; module name
+
+        PUBLIC  main                    ; make the main label vissible
+                                        ; outside this module
+        ORG     0FFFEh
+        DC16    init                    ; set reset vector to 'init' label
+
+        RSEG    CSTACK                  ; pre-declaration of segment
+        RSEG    CODE                    ; place program in 'CODE' segment
+
+init:   MOV     #SFE(CSTACK), SP        ; set up stack
+
+main:   NOP                             ; main program
+        MOV.W   #WDTPW+WDTHOLD,&WDTCTL  ; Stop watchdog timer
+        
+        MOV.W #0,R15
+        MOV.W #255,0(R15)
+        MOV.W #135,2(R15)
+        MOV.W #45,4(R15)
+        MOV.W #1,6(R15)
+        MOV.W #4,R14
+        CALL #ordem_decrescente
+        
+        JMP $                           ; jump to current location '$'
+                                        ; (endless loop)
+; FUNÇÃO VETOR ORDEM DECRESCENTE -------------------------------------------------
+ordem_decrescente:        ; Vetor de posição 0 R15 e tamanho R14
+                          ;Valores até 255
+        dec.w R14;      ;R14 = R14 -1
+        add.w R14,R14   ;R14 = 2*(R14-1)
+        mov.w #0,R13
+        mov.w #2,R12
+        push.w R11
+        push.w R10
+        mov.w #2,R10
+        clr.w R11         ;equivalente ao i = 0
+        add.w R15,R13     ; primeira posição do vetor
+        add.w R13,R1      ; segunda posição do vetor
+        sub.w #2,R13      ; Subtrai para poder repor o dois no
+        sub.w #2,R12      ; ordem_crescente_else
+        
+ordem_decrescente_else:
+        cmp R11, R14
+        jeq ordem_decrescente_fim
+        add.w R10,R13    ; posição anterior do vetor
+        add.w R10,R12    ; posição atual do vetor
+        incd.w R11       ; equivalente ao i+=2
+        cmp 0(R12),0(R13)
+        jge ordem_decrescente_else
+        mov.w #0,R15     ; CRESCENTE
+        pop.w R11
+        pop.w R10
+        ret
+ordem_decrescente_fim:
+        mov.w #1,R15     ; DECRESCENTE
+        pop.w R11
+        pop.w R10
+        ret
+;-------------------------------------------------------------------------------
+          
+        END
+
+```
+
 
 9. Escreva uma sub-rotina na linguagem Assembly do MSP430 que calcula o produto escalar de dois vetores, `a` e `b`. O primeiro endereço do vetor `a` deverá ser passado através do registrador R15, o primeiro endereço do vetor `b` deverá ser passado através do registrador R14, e o tamanho do vetor deverá ser passado pelo registrador R13. A saída deverá ser fornecida no registrador R15.
 
