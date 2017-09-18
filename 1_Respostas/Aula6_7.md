@@ -206,7 +206,87 @@ int Primalidade (unsigned int numero){
 ```
 
 (b) Escreva a sub-rotina equivalente na linguagem Assembly do MSP430. A variável de entrada é fornecida pelo registrador R15, e o valor de saída também.
+```
+#include "msp430.h"                     ; #define controlled include file
 
+        NAME    main                    ; module name
+
+        PUBLIC  main                    ; make the main label vissible
+                                        ; outside this module
+        ORG     0FFFEh
+        DC16    init                    ; set reset vector to 'init' label
+
+        RSEG    CSTACK                  ; pre-declaration of segment
+        RSEG    CODE                    ; place program in 'CODE' segment
+
+init:   MOV     #SFE(CSTACK), SP        ; set up stack
+
+main:   NOP                             ; main program
+        MOV.W   #WDTPW+WDTHOLD,&WDTCTL  ; Stop watchdog timer
+        
+        MOV.W #10,R15
+        CALL #primaridade
+        MOV.W R15,R6
+        
+        JMP $                           ; jump to current location '$'
+                                        ; (endless loop)
+
+; FUNÇÃO PRIMARIDADE -----------------------------------------------------------
+primaridade:
+        mov.w #2,R14      ; Equivalente ao int i = 2
+        mov.w #1,R13      ; Equivalente ao int j = 1
+        clr.w R12         ; Equivalente ao int auxiliar = 0
+for_i_primaridade:
+        cmp R15,R14
+        jge fim_for_i_primaridade
+for_j_primaridade:
+        cmp R15,R13
+        jge fim_for_j_primaridade
+          ;Multiplicação
+          push.w R15
+          push.w R14
+          mov.w R13,R15   ; R5 = j e R14 já é igual a i
+          call #mult
+          mov.w R15,R12   ; R12 = R13*R14 ==> auxiliar = i*j
+          pop.w R14
+          pop.w R15
+          ; Fim da multiplicação
+          
+          cmp R12,R15      ; Se for i*j for igual ao R15, então ele não é primo
+          jeq nao_primo
+
+          inc.w R13       ; j++
+          jmp for_j_primaridade
+
+fim_for_j_primaridade
+        inc.w R14         ; i++
+        jl for_i_primaridade
+fim_for_i_primaridade:
+        mov.w #1,R15      ; Se chegou aqui é porque não existe nenhum i*j que
+        ret               ; igual ao R15
+nao_primo:
+        mov.w #0,R15      ; teve um i*j igual R15
+        ret
+;-------------------------------------------------------------------------------
+
+; FUNÇÃO MULTIPLICAÇÃO ---------------------------------------------------------
+mult:
+        TST R14       ; Verificar se R14 é igual a zero
+        JNZ mult_else ; caso não seja, continua decaindo
+        CLR.W R15   ;Se for igual a zero, então limpa R15 para colocar as somas
+        ret
+mult_else
+        PUSH.W R15    ;decai o R14 para guardar R15 R14 vezes na pilha
+        DEC.W R14     ; até R14 for igual a zero
+        CALL #mult    ;No MULT ele vai testar R14
+        POP.W R14     ; Reculpera todos R15 que estão na pilha para R14
+        ADD R14,R15
+        RET
+;-------------------------------------------------------------------------------
+
+        END
+
+```
 6. Escreva uma função em C que calcula o duplo fatorial de n, representado por n!!. Se n for ímpar, n!! = 1*3*5*...*n, e se n for par, n!! = 2*4*6*...*n. Por exemplo, 9!! = 1*3*5*7*9 = 945 e 10!! = 2*4*6*8*10 = 3840. Além disso, 0!! = 1!! = 1.
 O protótipo da função é:
 
