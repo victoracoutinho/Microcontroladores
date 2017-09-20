@@ -360,6 +360,177 @@ double Fatorial(unsigned int n){
 
 
 (b) Escreva a sub-rotina equivalente na linguagem Assembly do MSP430, mas considere que os valores de entrada e de saída são inteiros de 16 bits. A variável de entrada é fornecida pelo registrador R15, e o valor de saída também.
+```
+#include "msp430.h"                     ; #define controlled include file
+
+        NAME    main                    ; module name
+
+        PUBLIC  main                    ; make the main label vissible
+                                        ; outside this module
+        ORG     0FFFEh
+        DC16    init                    ; set reset vector to 'init' label
+
+        RSEG    CSTACK                  ; pre-declaration of segment
+        RSEG    CODE                    ; place program in 'CODE' segment
+
+init:   MOV     #SFE(CSTACK), SP        ; set up stack
+
+main:   NOP                             ; main program
+        MOV.W   #WDTPW+WDTHOLD,&WDTCTL  ; Stop watchdog timer
+        
+        ;mov.w #2,R15
+        ;call #exp
+        ;mov.w R15,R6
+        
+        mov.w #8,R15
+        call #exp
+        mov.w R15,R7
+        
+        JMP $                           ; jump to current location '$'
+                                        ; (endless loop)
+                                        
+; FUNÇÃO EXPONENCIAL E^N--------------------------------------------------------
+exp:                  ; Calcula e^R15
+        clr.w R14     ; Equivalente ao int i = 0
+        clr.w R12     ; Resultado
+        push.w R11
+        /*; Definindo limite
+        push.w R15
+        push.w R14
+        push.w R13
+        push.w R12
+        mov.w #3,R14
+        call #exponencial
+        mov.w R15,R11
+        pop.w R12
+        pop.w R13
+        pop.w R14
+        pop.w R15
+        ; Fim da exponencial
+        sub.w #1,R11    ; Limite R15^3-1*/
+        
+
+for_exp:
+        mov.w #1,R13  ; auxiliar = 1
+        ;Exponecial R15^R14
+        push.w R15
+        push.w R14
+        push.w R12
+        call #exponencial   ; R15^R14 ==> x^i
+        mov.w R15, R13
+        pop.w R12
+        pop.w R14
+        pop.w R15
+        ;Fim da exponencial R15^R14
+        ; Fatorial e divisão
+        push.w R15
+        push.w R14
+        push.w R12
+        push.w R13
+        mov.w R14,R15
+        call #fatorial   ; i! => R15
+        pop.w R13
+        mov.w R15, R14    ; auxiliar/fatorial(i) ==> R13/R15=>R15
+        mov.w R13, R15
+        push.w R13
+        call #divisao     ; Função divisão
+        pop.w R13
+        pop.w R12         ; Recupera o resultado
+        add.w R15,R12     ; resultado+= auxiliar/fatorial(i)
+        pop.w R14
+        pop.w R15
+        inc.w R14
+        cmp #7,R14       ; Ou seja, até i = 20
+        jne for_exp
+        mov.w R12,R15
+        pop.w R11
+        ret     
+
+;-------------------------------------------------------------------------------
+
+; FUNÇÃO EXPONENCIAL A^N -------------------------------------------------------
+exponencial:          ; Calcula R15^R14
+        mov.w #1, R13     ; Equivalente ao int i = 1. Isso pq já começa com x^2
+        mov.w R15,R12
+        tst R14                 ; x^0 = 1
+        jz fim_exponencial_N_0
+        cmp #1,R14              ; x^1 = x
+        jeq fim_exponencial
+        
+for_exponencial:
+        push.w R14
+        mov.w R12,R14 ;
+        call #mult    ; resultado = i*resultado
+        pop.w R14
+        inc.w R13     ; i++
+        cmp R13,R14
+        jne for_exponencial
+fim_exponencial:
+        ret
+fim_exponencial_N_0:
+        mov.w #1,R15
+        ret
+;-------------------------------------------------------------------------------
+
+; FUNÇÃO FATORIAL --------------------------------------------------------------
+fatorial:
+        mov.w #1,R14 ; Equivalente ao resultado igual a 1
+        clr.w R13     ; Equivalente ao int i = 0
+        mov.w R15,R12 ;Guarda o R15 pois o reg vai ser alterado
+        mov.w #1,R15
+        cmp #0,R12
+        jne for_fatorial
+        mov.w #1,R15
+        ret
+for_fatorial:
+        inc.w R13     ; i++
+        mov.w R13,R14 ;
+        call #mult    ; resultado = i*resultado
+        cmp R13,R12
+        jne for_fatorial
+        ret   
+        
+; ------------------------------------------------------------------------------
+
+; FUNÇÃO MULTIPLICAÇÃO ---------------------------------------------------------
+mult:
+        TST R14       ; Verificar se R14 é igual a zero
+        JNZ mult_else ; caso não seja, continua decaindo
+        CLR.W R15   ;Se for igual a zero, então limpa R15 para colocar as somas
+        ret
+mult_else
+        PUSH.W R15    ;decai o R14 para guardar R15 R14 vezes na pilha
+        DEC.W R14     ; até R14 for igual a zero
+        CALL #mult    ;No MULT ele vai testar R14
+        POP.W R14     ; Reculpera todos R15 que estão na pilha para R14
+        ADD R14,R15
+        RET
+;-------------------------------------------------------------------------------
+
+; FUNÇÃO DIVISÃO ---------------------------------------------------------------
+divisao ; R15 dividido por R14
+        tst.w R15
+        jeq fim_divisao
+        mov.w R14,R12
+        rra.w R12         ; R14/2
+        add.w R12,R15
+        clr.w R13         ; Conta quantas vezes R15 é subtraido por R14
+verificar:
+        cmp R14,R15       ; Até que R15 seja menor que R14
+        jhs divisao_else
+        mov.w R13,R15     ;Aredonda para o menor número
+fim_divisao:
+        ret
+divisao_else
+        sub.w R14, R15
+        inc.w R13         ; Contagem
+        jmp verificar
+;-------------------------------------------------------------------------------
+                                        
+        END
+
+
+```
 
 8. Escreva uma sub-rotina na linguagem Assembly do MSP430 que indica se um vetor esta ordenado de forma decrescente. Por exemplo:
 
