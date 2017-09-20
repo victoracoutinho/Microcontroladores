@@ -146,4 +146,39 @@ int main( void )
 5. Escreva um código em C que acende os LEDs quando o botão é pressionado. Deixe o MSP430 em modo de baixo consumo, e habilite a interrupção do botão.
 ```C
 
+#include <msp430g2553.h>
+#include <intrinsics.h>
+#define LEDS (BIT6+BIT0)
+#define BOTAO BIT3
+
+int main( void )
+{
+  // Stop watchdog timer to prevent time out reset
+  //Código que os leds ligam com o botão. Usar Interrupção e baixo consumo.
+  WDTCTL = WDTPW + WDTHOLD;
+  P1DIR = LEDS;
+  P1DIR &= ~BOTAO;
+  P1REN |= BOTAO;
+  P1OUT |= BOTAO; // define pull-up os pinos de entrada. Para não ocorrer problemas.
+  P1IES |= BOTAO;
+  P1IE |= BOTAO;
+  //__bis_SR_register(GIE);
+  __enable_interrupt();
+  //P1OUT |= LEDS; //LIGAR
+  //P1OUT &= ~LEDS;
+  void _low_power_mode_off_on_exit(void);  //Modo de baixo consumo quando a
+                                            // Quando a interrupção voltar
+  while(1);
+
+  return 0;
+}
+
+#pragma vector=PORT1_VECTOR
+__interrupt void ISR_botao(void) {
+  if((P1IN & BOTAO) == 0)
+    P1OUT ^= LEDS;//Liga ou desliga os leds
+
+  P1IFG &= ~BOTAO;// tira o aviso de interrupção
+}
+
 ```
